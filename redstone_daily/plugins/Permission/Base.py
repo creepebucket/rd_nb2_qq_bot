@@ -1,6 +1,5 @@
 from redstone_daily.plugins.Config import config
 from redstone_daily.Data import OpreationPermissions
-from redstone_daily.Utils import get_permission
 
 from nonebot import on_command
 from nonebot.params import CommandArg
@@ -22,7 +21,7 @@ perm_set_matcher = on_command(
 async def handle_perm(event: Event):
     sender, arg, group = get_context(event)
 
-    await perm_matcher.finish(F'您当前的权限为 {sender.permission} 级。')
+    await perm_matcher.finish(F'您当前的权限为 {sender.get_permission(group)} 级。')
 
 
 @perm_list_matcher.handle()
@@ -48,7 +47,7 @@ async def handle_perm_query(event: Event):
 
     user = User(int(arg[1]))  # 实例化用户对象
 
-    await perm_query_matcher.finish(f'用户 {user.id} 的操作权限为 {user.permission} 级。')
+    await perm_query_matcher.finish(f'用户 {user.id} 的操作权限为 {user.get_permission(group)} 级。')
     await perm_query_matcher.finish('参数不能为空！')
 
 
@@ -70,6 +69,6 @@ async def handle_perm_set(event: Event):
     if not 1 <= permission <= 10:  # 若权限等级不在 1 到 10 之间
         await perm_set_matcher.finish('权限等级只能在 1 到 10 之间。')
 
-    user.set_permission(permission)  # 设置用户权限
+    user.set_permission(permission, group)  # 设置用户权限
     await perm_set_matcher.finish(F'用户 {user.id} 的操作权限已设置为 {permission} 级。')
 

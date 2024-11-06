@@ -26,7 +26,9 @@ def todo_formatter(id, arg, sender, edit=False):
         if arg[i].startswith('content='):
             content = arg[i][8:]
         if arg[i].startswith('ddl='):
-            ddl = arg[i][4:]
+            if len(ddl) != 3 or not all(map(lambda x: x.isdigit(), ddl)):
+                raise ValueError('请输入正确的截止日期')
+            ddl = arg[i][4:].split('-')
         if arg[i].startswith('req='):
             req = arg[i][4:]
         if arg[i].startswith('user='):

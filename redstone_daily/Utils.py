@@ -1,12 +1,6 @@
 from .plugins.Config import config
-from .Data import OpreationPermissions
 
 from nonebot.adapters.onebot.v11 import Message, Bot
-
-
-def get_permission(number: (int | str)):
-    number = str(number) if isinstance(number, int) else number
-    return OpreationPermissions.data.get(number, 0)
 
 
 def turn_message(iterator: iter):

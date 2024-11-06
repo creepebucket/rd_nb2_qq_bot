@@ -12,9 +12,9 @@ client = pymongo.MongoClient(host)
 
 
 class Database:
-    def __init__(self):
+    def __init__(self, database_name='qq_bot'):
         # 初始化数据库
-        self.database = client['qq_bot']
+        self.database = client[database_name]
         self.collection = None
 
     def set_collection(self, collection_name):
@@ -34,6 +34,17 @@ class Database:
     def clear(self):
         # 清空集合
         self.collection.delete_many({})
+
+    def __getattr__(self, name):
+        """
+        实现getattr方法，使得可以通过database示例.方法名 调用数据库集合的方法
+        :param name: 方法名
+        :return: 数据库集合的方法
+        """
+        if self.collection is None:
+            raise ValueError('错误：请先初始化数据库集合')
+
+        return getattr(self.collection, name)
 
 # 导出数据库
 def get_database(collection_name):

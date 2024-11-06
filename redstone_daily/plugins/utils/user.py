@@ -21,28 +21,30 @@ class User:
         """
         return self.get_permission()
 
-    def get_permission(self) -> int:
+    def get_permission(self, group) -> int:
         """
         获取用户权限
+        :param group: 群号
         """
 
-        permission_doc = permissions.find_one({'id': self.id})  # 获取用户权限
+        permission_doc = permissions.find_one({'id': self.id, 'group': group.id})  # 获取用户权限
 
         if permission_doc is None:  # 如果用户没有权限，则默认为0
             return 0
 
         return permission_doc['permission']  # 返回用户权限
 
-    def set_permission(self, permission: int):
+    def set_permission(self, permission: int, group):
         """
         设置用户权限
         :param permission: 权限值
+        :param group: 群号
         """
 
         if type(permission) != int:  # 确保权限值为整数
             raise TypeError('权限值必须为整数')
 
-        permissions.update_one({'id': self.id}, {'$set': {'permission': permission}}, upsert=True)
+        permissions.update_one({'id': self.id, 'group': group.id}, {'$set': {'permission': permission}}, upsert=True)
 
     def is_subscriber(self) -> bool:
         """

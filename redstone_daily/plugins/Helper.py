@@ -1,6 +1,9 @@
 from nonebot import on_command
 from nonebot.adapters import Message
+from nonebot.adapters.onebot.v11 import Event
 from nonebot.params import CommandArg
+
+from redstone_daily.plugins.utils import get_context
 
 # 所有帮助信息都在这里 qwq
 
@@ -23,11 +26,12 @@ commands = on_command('commands')
 
 
 @commands.handle()
-async def rd_commands(args: Message = CommandArg()):
+async def rd_commands(event: Event):
     '''
     显示指令列表
     '''
-    arg = args.extract_plain_text().split(' ')  # 取出参数
+
+    sender, arg, group = get_context(event)
 
     commands_list = [
         '最新日报: latest',
@@ -40,7 +44,6 @@ async def rd_commands(args: Message = CommandArg()):
         '新用户欢迎: welcomenew',
         'OP指令: op',
         '禁言: mute',
-
         '修改昵称: nickname',
         '修改头衔: title',
         '踢出群聊: kick',
@@ -53,30 +56,20 @@ async def rd_commands(args: Message = CommandArg()):
         '最新测试页面: dev',
     ]
 
-    async def send_commands(start, end, page):
-        commands_str = ''
-        for i in range(start, end):
-            commands_str += commands_list[i] + '\n'  # 构造字符串
+    page = int(arg[0]) if arg else 1  # 处理页码
 
-        await commands.finish(f'RD QQ Bot指令列表 第 {page} / {int(len(commands_list) / 10) + 1} 页\n---------\n'
-                              f'{commands_str}'
-                              f'---------')
+    start = (page - 1) * 10  # 计算开始位置
+    end = page * 10  # 计算结束位置
+    if end > len(commands_list):  # 处理页码超出范围
+        end = len(commands_list) - 1
 
-    if len(arg) >= 1:  # 处理参数
-        page = int(arg[0]) if arg[0].isdigit() else 1  # 处理页码
+    commands_str = ''
+    for i in range(start, end):
+        commands_str += commands_list[i] + '\n'  # 构造字符串
 
-        if page <= 0:
-            await commands.finish('页码必须为正整数')
-
-        start = (page-1)*10  # 计算开始位置
-        end = page*10  # 计算结束位置
-        if end > len(commands_list):   # 处理页码超出范围
-            end = len(commands_list) - 1
-
-        if start > len(commands_list):  # 处理页码超出范围
-            await commands.finish('页码超出范围')
-
-        await send_commands(start, end+1, page)
+    await commands.finish(f'RD QQ Bot指令列表 第 {page} / {int(len(commands_list) / 10) + 1} 页\n---------\n'
+                          f'{commands_str}'
+                          f'---------')
 
 
 tutorial = on_command('tutorial')

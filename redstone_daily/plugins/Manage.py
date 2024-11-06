@@ -29,7 +29,7 @@ async def handle_ban(event: GroupMessageEvent):
         await ban_matcher.finish('参数错误，请重新输入！')
 
     # 如果被拉黑的用户权限高于执行者，则拒绝执行
-    if victim.get_permission() >= sender.get_permission():
+    if victim.get_permission(group) >= sender.get_permission(group):
         await ban_matcher.finish('你不能拉黑比自己权限高的人！')
 
     try:
@@ -58,7 +58,7 @@ async def handle_mute(event: GroupMessageEvent):
         await mute_matcher.finish('第一个参数用户 QQ 号格式错误，请重新输入！')
 
     victim = User(int(victim_id))  # 将禁言用户转换为User对象
-    if victim.get_permission() >= sender.get_permission():  # 如果被禁言的用户权限高于执行者，则拒绝执行
+    if victim.get_permission(group) >= sender.get_permission(group):  # 如果被禁言的用户权限高于执行者，则拒绝执行
         await mute_matcher.finish('你不能禁言比自己权限高的人！')
 
     # 将禁言时间转换为秒数
@@ -88,7 +88,7 @@ async def handle_kick(event: GroupMessageEvent):
         await kick_matcher.finish('参数错误，请重新输入！')
 
     # 如果被踢的用户权限高于执行者，则拒绝执行
-    if victim.get_permission() >= sender.get_permission():
+    if victim.get_permission(group) >= sender.get_permission(group):
         await kick_matcher.finish('你不能踢比自己权限高的人！')
 
     try:
@@ -139,7 +139,7 @@ async def handle_nickname(event: GroupMessageEvent):
         await nickname_matcher.finish('第一个参数用户 QQ 号格式错误，请重新输入！')
 
     user = User(int(user_id))  # 将 QQ 号转换为User对象
-    if user.get_permission() >= sender.get_permission():  # 如果被改名的用户权限高于执行者，则拒绝执行
+    if user.get_permission(group) >= sender.get_permission(group):  # 如果被改名的用户权限高于执行者，则拒绝执行
         await nickname_matcher.finish('你不能改名比自己权限高的人！')
 
     try:

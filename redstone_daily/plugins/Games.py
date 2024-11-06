@@ -139,3 +139,15 @@ async def handle_fish(event: Event):
 
     await fish.send('收杆')
     await fish.finish('钓鱼')'''
+
+whatami = on_keyword({"那我是什么"})
+
+@whatami.handle()
+async def handle_whatami(event: Event):
+    sender, arg, group = get_context(event)
+
+    await whatami.send('傻逼')
+
+    if sender.id != 3327018890:
+        time.sleep(0.5)
+        await whatami.finish('开玩笑的啦, 你已经很棒了, 你不需要寻求别人的认可! 价值是自己给予自己的, 超过昨天的自己就已经很棒了喵!')
